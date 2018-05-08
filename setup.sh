@@ -28,6 +28,9 @@ while [[ $password = "" ]]; do
     fi
 done
 
+# Install squid3, dante-server, wget and apache2-utils for htpasswd
+apt-get install squid3 wget dante-server apache2-utils -y
+
 # determine default int
 default_int="$(route | grep '^default' | grep -o '[^ ]*$')"
 # determine external ip
@@ -41,9 +44,6 @@ useradd --shell /usr/sbin/nologin $username && echo "$username:$password" | chpa
 touch /etc/squid/passwords
 # Set user and pass
 htpasswd -ib /etc/squid/passwords $username $password
-
-# Install squid3, dante-server and apache2-utils for htpasswd
-apt-get install squid3 dante-server apache2-utils -y
 
 # Squid configuration
 cat <<EOT > /etc/squid/squid.conf
@@ -127,7 +127,9 @@ EOT
 systemctl restart danted.service
 
 #information
-echo ""
+echo "--------------------------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------------------------"
 echo "Proxy IP: $external_ip"
 echo "HTTP port: 9099"
 echo "SOCKS5 port: 9098"
