@@ -32,7 +32,7 @@ done
 apt-get install squid3 wget dante-server apache2-utils -y
 
 # determine default int
-default_int="$(route | grep '^default' | grep -o '[^ ]*$')"
+default_int="$(ip route list |grep default |grep -o -P '\b[a-z]+\d+\b')" #Because net-tools in debian, ubuntu are obsolete already
 # determine external ip
 external_ip="$(wget ipinfo.io/ip -q -O -)"
 
@@ -55,7 +55,9 @@ acl ncsa_users proxy_auth REQUIRED
 dns_v4_first on
 acl manager proto cache_object
 acl localhost src 127.0.0.1/32
-acl to_localhost dst 127.0.0.0/8
+acl to_localhost dst 127.0.0.0/8 # systemctl status squid.service after installation squid and danted by this script
+                                 # WARNING: because of this '127.0.0.0/8' is ignored to keep splay tree searching predictable
+                                 # WARNING: You should probably remove '127.0.0.0/8' from the ACL named 'to_localhost'
 acl localnet src 0.0.0.0/8 192.168.100.0/24 192.168.101.0/24
 acl SSL_ports port 443
 acl Safe_ports port 80      # http
@@ -80,7 +82,8 @@ icp_access deny all
 htcp_access deny all
 
 http_port 9099
-hierarchy_stoplist cgi-bin ?
+hierarchy_stoplist cgi-bin ? # systemctl status squid.service after installation squid and danted by this script
+                             # ERROR: Directive 'hierarchy_stoplist' is obsolete.
 access_log /var/log/squid/access.log squid
 
 
@@ -101,7 +104,8 @@ via off
 forwarded_for off
 follow_x_forwarded_for deny all
 request_header_access X-Forwarded-For deny all
-header_access X_Forwarded_For deny all
+header_access X_Forwarded_For deny all          # systemctl status squid.service after installation squid and danted by this script
+                                                # ERROR: Directive 'header_access' is obsolete.
 EOT
 systemctl restart squid.service
 
@@ -124,6 +128,8 @@ socks pass {
         protocol: tcp udp
 }
 EOT
+# And we have a little bit problem with this message from `systemctl status danted.service`
+#               danted.service: Failed to read PID from file /var/run/danted.pid: Invalid argument
 systemctl restart danted.service
 
 #information
