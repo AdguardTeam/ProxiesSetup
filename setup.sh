@@ -112,7 +112,7 @@ systemctl restart squid.service
 # dante conf
 cat <<EOT > /etc/danted.conf
 logoutput: /var/log/socks.log
-internal: $default_int port = 9098
+internal: 0.0.0.0 port = 9098
 external: $default_int
 socksmethod: username
 clientmethod: none
