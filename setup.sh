@@ -28,8 +28,8 @@ while [[ $password = "" ]]; do
     fi
 done
 
-# Install squid3, dante-server, wget and apache2-utils for htpasswd
-apt-get install squid3 wget dante-server apache2-utils -y
+# Install squid, dante-server, wget and apache2-utils for htpasswd
+apt-get install squid wget dante-server apache2-utils -y
 
 # determine default int
 default_int="$(ip route list |grep default |grep -o -P '\b[a-z]+\d+\b')" #Because net-tools in debian, ubuntu are obsolete already
