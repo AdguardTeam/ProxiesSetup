@@ -120,11 +120,11 @@ user.privileged: root
 user.notprivileged: nobody
 user.libwrap: nobody
 client pass {
-        from: 0.0.0.0/0 port 1-65535 to: 0.0.0.0/0
+        from: 0/0 port 1-65535 to: 0/0
         log: connect disconnect error
 }
 socks pass {
-        from: 0.0.0.0/0 to: 0.0.0.0/0
+        from: 0/0 to: 0/0
         protocol: tcp udp
 }
 EOT
